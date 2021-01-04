@@ -1,4 +1,4 @@
-# Heapy-kotlin-repositories Gradle Plugin [![Build Status](https://travis-ci.com/Heapy/heapy-kotlin-repositories-gradle-plugin.svg?branch=main)](https://travis-ci.com/Heapy/heapy-kotlin-repositories-gradle-plugin) [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/heapy/gradle/kotlin/repositories/io.heapy.gradle.kotlin.repositories/maven-metadata.xml.svg?colorB=007ec6&label=gradle%20plugin)](https://plugins.gradle.org/plugin/io.heapy.gradle.kotlin.repositories)
+# Heapy-kotlin-repositories Gradle Plugin [![Build Status](https://travis-ci.com/Heapy/heapy-kotlin-repositories-gradle-plugin.svg?branch=main)](https://travis-ci.com/Heapy/heapy-kotlin-repositories-gradle-plugin) [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/heapy/gradle/kotlin/repositories/io.heapy.gradle.kotlin.repositories.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=gradle%20plugin)](https://plugins.gradle.org/plugin/io.heapy.gradle.kotlin.repositories)
 
 ## For buildSrc usage ‼️
 
