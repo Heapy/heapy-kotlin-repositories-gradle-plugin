@@ -3,6 +3,7 @@ plugins {
     id("com.gradle.plugin-publish").version("0.12.0")
     id("io.heapy.gradle.properties").version("1.1.2")
     id("java-gradle-plugin")
+    `maven-publish`
 }
 
 group = "io.heapy.gradle.kotlin.repositories"
@@ -12,9 +13,22 @@ repositories {
 }
 
 dependencies {
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:$embeddedKotlinVersion")
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+}
+
+// For testing in real project from mavenLocal before publishing
+publishing {
+    publications {
+        create<MavenPublication>("mpl") {
+            from(project.components["java"])
+
+            group = "io.heapy.gradle.kotlin.repositories"
+            artifactId = "io.heapy.gradle.kotlin.repositories.gradle.plugin"
+        }
+    }
 }
 
 tasks {

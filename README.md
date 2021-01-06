@@ -18,13 +18,20 @@ So plugin executes after `plugins` resolved, so plugin can't add Kotlin reposito
 ```kotlin
 // buildSrc/build.gradle.kts
 plugins {
-    id("io.heapy.gradle.kotlin.repositories").version("1.0.0")
+    `kotlin-dsl`
+    id("io.heapy.gradle.kotlin.repositories").version("1.1.0")
+}
+
+repositories {
+    jcenter()
+    gradlePluginPortal()
 }
 
 val kotlinVersion = "1.4.20-dev-3947"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    implementation("gradle.plugin.io.heapy.gradle.kotlin.repositories:heapy-kotlin-repositories-gradle-plugin:1.1.0")
 }
 ```
 
