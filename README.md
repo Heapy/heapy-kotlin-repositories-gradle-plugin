@@ -13,12 +13,13 @@ Roughly gradle works this way:
 
 So plugin executes after `plugins` resolved, so plugin can't add Kotlin repository to plugin repositories.
 
-## Install
+## Usage
 
 ```kotlin
 // buildSrc/build.gradle.kts
 plugins {
     `kotlin-dsl`
+    // Plugin will add repository to current build to download kotlin-gradle-plugin
     id("io.heapy.gradle.kotlin.repositories").version("1.1.0")
 }
 
@@ -27,11 +28,37 @@ repositories {
     gradlePluginPortal()
 }
 
+// This is single place where version should be updated
 val kotlinVersion = "1.4.20-dev-3947"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    implementation("gradle.plugin.io.heapy.gradle.kotlin.repositories:heapy-kotlin-repositories-gradle-plugin:1.1.0")
+    // Add plugin to classpath to use functions in `JvmPlugin`
+    implementation("io.heapy.gradle.kotlin.repositories:heapy-kotlin-repositories-gradle-plugin:1.1.0")
+}
+```
+
+```kotlin
+// build.gradle.kts
+plugins {
+    id("jvm-plugin")
+}
+```
+
+```kotlin
+// buildSrc/src/main/kotlin/JvmPlugin.kt
+class JvmPlugin : Plugin<Project> {
+    override fun apply(project: Project) = with(project) {
+        pluginManager.apply(KotlinPluginWrapper::class)
+
+        repositories {
+            kotlinRepository()
+        }
+
+        dependencies {
+            add("implementation", kotlin("stdlib"))
+        }
+    }
 }
 ```
 

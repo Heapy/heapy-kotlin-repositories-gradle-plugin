@@ -13,6 +13,7 @@ script:
   - ./gradlew check
   - cd "${TRAVIS_BUILD_DIR}/manual-test/" && ./gradlew clean build
   - cd "${TRAVIS_BUILD_DIR}/manual-test-2/" && ./gradlew clean build
+  - cd "${TRAVIS_BUILD_DIR}/usage/" && ./gradlew clean build
   - cd "${TRAVIS_BUILD_DIR}"
 
 deploy:

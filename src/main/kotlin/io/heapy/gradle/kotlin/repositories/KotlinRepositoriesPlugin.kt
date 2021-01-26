@@ -102,7 +102,7 @@ private fun Project.addRepository(version: String) {
                 }
             }
         } else {
-            logger.error("Kotlin version [$version] not found in dev, eap and jcenter repositories")
+            logger.error("Kotlin version [$version] not found in dev, eap or jcenter repositories")
         }
     }
 }

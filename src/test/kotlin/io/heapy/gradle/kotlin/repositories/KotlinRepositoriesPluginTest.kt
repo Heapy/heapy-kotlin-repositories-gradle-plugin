@@ -22,7 +22,7 @@ class KotlinRepositoriesPluginTest {
     @Test
     fun `simple project build with dev version`() {
         val projectDir = Files.createTempDirectory("")
-        projectDir.addFile("build.gradle.kts") {
+        projectDir.addFile(file = "build.gradle.kts") {
             """
                 plugins {
                     `kotlin-dsl`
@@ -53,7 +53,7 @@ class KotlinRepositoriesPluginTest {
     @Test
     fun `simple project build with eap version`() {
         val projectDir = Files.createTempDirectory("")
-        projectDir.addFile("build.gradle.kts") {
+        projectDir.addFile(file = "build.gradle.kts") {
             """
                 plugins {
                     `kotlin-dsl`
@@ -90,7 +90,7 @@ class KotlinRepositoriesPluginTest {
     @Test
     fun `simple project build unknown version`() {
         val projectDir = Files.createTempDirectory("")
-        projectDir.addFile("build.gradle.kts") {
+        projectDir.addFile(file = "build.gradle.kts") {
             """
                 plugins {
                     `kotlin-dsl`
@@ -117,14 +117,68 @@ class KotlinRepositoriesPluginTest {
         assertTrue(result.output.contains(s1)) {
             "Output doesn't contains [$s1]. Output: ${result.output}"
         }
-        val s2 = "Kotlin version [unknown] not found in dev, eap and jcenter repositories"
+        val s2 = "Kotlin version [unknown] not found in dev, eap or jcenter repositories"
         assertTrue(result.output.contains(s2)) {
             "Output doesn't contains [$s2]. Output: ${result.output}"
         }
     }
+
+    @Test
+    fun `simple project build with kotlin version`() {
+        val projectDir = Files.createTempDirectory("")
+        Files.createDirectories(projectDir.resolve("buildSrc"))
+        projectDir.addFile("buildSrc", file = "build.gradle.kts") {
+            """
+                plugins {
+                    `kotlin-dsl`
+                    id("io.heapy.gradle.kotlin.repositories").version("1.1.0")
+                }
+
+                repositories {
+                    jcenter()
+                    gradlePluginPortal()
+                }
+
+                dependencies {
+                    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.70-eap-274")
+                    implementation("io.heapy.gradle.kotlin.repositories:heapy-kotlin-repositories-gradle-plugin:1.1.0")
+                }
+            """.trimIndent()
+        }
+        projectDir.addFile(file = "build.gradle.kts") {
+            """
+                import io.heapy.gradle.kotlin.repositories.kotlinRepository
+                import org.gradle.api.internal.artifacts.repositories.DefaultMavenArtifactRepository
+
+                repositories {
+                    kotlinRepository()
+                    jcenter()
+                }
+
+                tasks.register("validate") {
+                    val eapRepo = repositories.map { it as DefaultMavenArtifactRepository }
+                        .firstOrNull { it.url == uri("https://dl.bintray.com/kotlin/kotlin-eap/") }
+
+                    if (eapRepo != null) println("Found eap")
+                }
+            """.trimIndent()
+        }
+
+        val result = GradleRunner.create()
+            .withProjectDir(projectDir.toFile())
+            .withPluginClasspath()
+            .withArguments("validate")
+            .build()
+
+        assertTrue(result.output.contains("Found eap"))
+    }
 }
 
-internal fun Path.addFile(name: String, body: () -> String) {
-    val newFile = resolve(name).toFile()
+internal fun Path.addFile(vararg folders: String, file: String, body: () -> String) {
+    val folder = folders.fold(this) { acc, path ->
+        acc.resolve(path)
+    }
+    Files.createDirectories(folder)
+    val newFile = folder.resolve(file).toFile()
     newFile.writeText(body())
 }
